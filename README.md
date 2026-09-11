@@ -48,7 +48,7 @@ same way `pyenv` and `direnv` do.
 
 | Command | |
 |---|---|
-| `brewtank create <name> [--strict]` | Create a tank |
+| `brewtank create <name> [--inherit]` | Create a tank |
 | `brewtank activate <name>` | Switch into it |
 | `brewtank deactivate` | Switch back |
 | `brewtank list` | All tanks, with size and formula count |
@@ -59,9 +59,18 @@ same way `pyenv` and `direnv` do.
 | `brewtank freeze [-o <file>]` | Write the tank's formulae to a `Brewfile` |
 | `brewtank restore [<file>]` | Install a `Brewfile` into the tank |
 
-By default a tank goes *first* on `PATH` and the global Homebrew stays
-reachable behind it, like a virtualenv. `--strict` removes the global prefix
-from `PATH` entirely, so only the tank's tools are visible.
+By default a tank is *strict*: activating it removes the global prefix from
+`PATH` entirely, so only the tank's tools are visible — a formula the tank's
+`brew` doesn't list can't be run by name either. That includes everyday tools
+you installed globally (`git`, `python`, ...); install them into the tank if
+you need them there.
+
+`--inherit` keeps the global Homebrew reachable *behind* the tank instead, like
+a virtualenv: the tank's tools win ties by going first, and everything else
+falls through to `/opt/homebrew`.
+
+Strictness is fixed at `create` time and stored in `~/.brewtank/registry.toml`
+(`strict = true/false`); edit that line to change an existing tank.
 
 ## Reproducing a tank
 

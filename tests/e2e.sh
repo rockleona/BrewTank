@@ -131,18 +131,20 @@ check "prefix is gone" "no" "$([ -e "$PREFIX" ] && echo yes || echo no)"
 say "switching tanks, and strict mode"
 brewtank remove "${TANK_NAME}a" --force >/dev/null 2>&1 || true
 brewtank remove "${TANK_NAME}b" --force >/dev/null 2>&1 || true
-brewtank create "${TANK_NAME}a" >/dev/null
-brewtank create "${TANK_NAME}b" --strict >/dev/null
+brewtank create "${TANK_NAME}a" --inherit >/dev/null
+brewtank create "${TANK_NAME}b" >/dev/null
 A="$(brewtank which "${TANK_NAME}a")"
 B="$(brewtank which "${TANK_NAME}b")"
 
 brewtank activate "${TANK_NAME}a"
+check "an --inherit tank keeps the global Homebrew behind it" \
+  "yes" "$(printf '%s' "$PATH" | tr ':' '\n' | grep -q "^$GLOBAL_PREFIX/bin$" && echo yes || echo no)"
 # Switching without deactivating first must not stack the two tanks on PATH.
 brewtank activate "${TANK_NAME}b"
 check "switching leaves the new tank active" "${TANK_NAME}b" "${BREWTANK_ACTIVE-}"
 check "the previous tank is off PATH" \
   "0" "$(printf '%s' "$PATH" | tr ':' '\n' | grep -c "^$A" || true)"
-check "a strict tank hides the global Homebrew" \
+check "a default (strict) tank hides the global Homebrew" \
   "0" "$(printf '%s' "$PATH" | tr ':' '\n' | grep -c "^$GLOBAL_PREFIX" || true)"
 check "the strict tank is still on PATH" \
   "1" "$(printf '%s' "$PATH" | tr ':' '\n' | grep -c "^$B/bin$" || true)"
