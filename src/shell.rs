@@ -111,8 +111,8 @@ pub fn activate(tank: &Tank, global_prefix: &Path, shell: Shell) -> Result<Strin
         q(&unset_before.join(" "))
     );
 
-    // A strict tank hides the global Homebrew entirely; the default only wins
-    // ties by going first, the way a virtualenv does.
+    // A strict tank (the default) hides the global Homebrew entirely; an
+    // inheriting one only wins ties by going first, the way a virtualenv does.
     let mut entries: Vec<String> = base["PATH"]
         .as_deref()
         .unwrap_or_default()

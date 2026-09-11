@@ -28,7 +28,7 @@ fn run() -> Result<()> {
             print!("{}", shell::init(shell));
             Ok(())
         }
-        Command::Create { name, strict } => create(&name, strict),
+        Command::Create { name, inherit } => create(&name, !inherit),
         Command::List => list(),
         Command::Remove { name, force } => remove(&name, force),
         Command::Which { name } => which(name.as_deref()),
@@ -129,7 +129,12 @@ fn create(name: &str, strict: bool) -> Result<()> {
 
     println!("Created tank '{name}' at {}", prefix.display());
     if strict {
-        println!("  strict: the global Homebrew will be hidden from PATH while active");
+        println!(
+            "  strict: the global Homebrew is hidden from PATH while active \
+             (create with --inherit to keep it)"
+        );
+    } else {
+        println!("  inherit: the global Homebrew stays on PATH behind this tank");
     }
     println!("\nActivate it with:\n    brewtank activate {name}");
     Ok(())

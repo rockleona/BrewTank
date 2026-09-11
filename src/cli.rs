@@ -23,9 +23,9 @@ pub enum Command {
     /// Create a new tank
     Create {
         name: String,
-        /// Hide the global Homebrew from PATH while this tank is active
+        /// Keep the global Homebrew on PATH behind this tank instead of hiding it
         #[arg(long)]
-        strict: bool,
+        inherit: bool,
     },
     /// List tanks
     List,

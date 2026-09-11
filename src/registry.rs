@@ -37,8 +37,12 @@ pub struct Entry {
     pub id: String,
     /// Seconds since the Unix epoch.
     pub created_at: i64,
-    #[serde(default)]
+    #[serde(default = "strict_by_default")]
     pub strict: bool,
+}
+
+fn strict_by_default() -> bool {
+    true
 }
 
 impl Registry {
